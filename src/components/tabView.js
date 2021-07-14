@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, Table } from 'reactstrap';
 import classnames from 'classnames';
 
 function TabView(props){
@@ -127,7 +127,7 @@ function TabView(props){
                 </Row>
                 </TabPane>
                 <TabPane tabId="3">
-                    <p>No data</p>
+                    <div className="no-data-found">No data</div>
                 </TabPane>
                 <TabPane tabId="4">
                     <p>No data</p>
