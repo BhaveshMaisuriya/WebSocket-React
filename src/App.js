@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import "./scss/index.css";
 import io from 'socket.io-client';
+import TabView from './components/tabView';
 
 const socket = io('localhost:3001');
 
-function App() {
+function App() {  
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastMessage, setLastMessage] = useState(null);
+  const [tab1Data, setTab1Data] = useState([]);
+  const [tab2Data, setTab2Data] = useState([]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -15,13 +18,16 @@ function App() {
     socket.on('disconnect', () => {
       setIsConnected(false);
     });
-    socket.on('message', data => {
-      setLastMessage(data);
+    socket.on('tab1', data => {
+      setTab1Data(data);
+    });
+    socket.on('tab2', data => {
+      setTab2Data(data);
     });
     return () => {
       socket.off('connect');
       socket.off('disconnect');
-      socket.off('message');
+      // socket.off('message');
     };
   });
 
@@ -31,11 +37,15 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <p>Connected: { '' + isConnected }</p>
         <p>Last message : { lastMessage || '-' }</p>
         <button  className="primary" onClick={ sendMessage }>Say hello!</button>
-      </header>
+      </header> */}
+      <div className='container'>
+        <div className='title'><h3>Single Currency Grid</h3></div>
+        <TabView tab1Data={tab1Data} tab2Data={tab2Data}/>
+      </div>
     </div>
   );
 }
