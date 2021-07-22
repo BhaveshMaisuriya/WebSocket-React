@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col, Table } from 'reactstrap';
 import classnames from 'classnames';
+import {connect} from 'react-redux'
 import io from 'socket.io-client';
+import { getTab1Data, getTab2Data } from '../store/tabView/action';
 const socket = io('localhost:3001');
 
 function TabView(props) {
@@ -11,16 +13,19 @@ function TabView(props) {
     const [tab2Data, setTab2Data] = useState([]);
 
     useEffect(() => {
-        socket.on('tab1', data => {
-            console.log('streaming tab1 data...', data);
-            setTab1Data(data);
-        });
-
-        socket.on('tab2', data => {
-            console.log('streaming tab2 data...', data);
-            setTab2Data(data);
-        });
+        const { onGetTab1Data, onGetTab2Data } = props;
+        onGetTab1Data();
+        onGetTab2Data();
     },[])
+
+    useEffect(() => {
+        if(props.tab1 !== null && props.tab2 !== null){
+            console.log('streaming tab1 data...', props.tab1);
+            console.log('streaming tab2 data...', props.tab2);
+            setTab1Data(props.tab1);
+            setTab2Data(props.tab2);
+        }
+    },[props.tab1, props.tab2]);
 
     const toggle = (val) => {
         setActiveTab(val);
@@ -161,4 +166,15 @@ function TabView(props) {
         </div>
     )
 }
-export default TabView;
+
+const mapStateToProps = ({ tabView }) => ({
+    tab1: tabView.tab1,
+    tab2: tabView.tab2,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    onGetTab1Data: () => dispatch(getTab1Data()),
+    onGetTab2Data: () => dispatch(getTab2Data()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabView);
